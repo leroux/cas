@@ -112,7 +112,16 @@ resizeObserver.observe(canvas);
 
 const inputObserver = new InputObserver((value) => {
     console.log(value);
-    plot(x => eval(value), GRAPH_MIN, GRAPH_MAX, DELTA_X);
+    try {
+        plot((x) => eval(value), GRAPH_MIN, GRAPH_MAX, DELTA_X);
+    } catch (e) {
+        if ((e instanceof SyntaxError) || // eg. "2*x + "
+            (e instanceof ReferenceError)) { // eg. "2*x + f"
+            console.log(e)
+        } else {
+            throw e
+        }
+    }
 });
 inputObserver.observe(input!);
 plot(x => x, GRAPH_MIN, GRAPH_MAX, DELTA_X);
